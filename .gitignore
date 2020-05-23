@@ -33,6 +33,7 @@ tsconfig.json
 
 # IDEs
 .idea
+.vscode
 
 # Chats
 data/
