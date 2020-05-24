@@ -49,7 +49,7 @@
         const dataTable = [
           ['Week Number', 'Message Count'],
         ];
-        let started = false;
+        let started = true;
         Object.keys(yearData).forEach(weekNumberStr => {
           const messageCount = yearData[weekNumberStr];
           started = started || messageCount > 0;
