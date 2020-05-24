@@ -4,6 +4,7 @@ import { paths } from "./paths.ts";
 const configJson = await Deno.readTextFile(`${paths.root}/config.json`);
 
 export interface Config {
+  port: number;
   sourceFiles: string[];
   outputPath: string;
 }
@@ -11,6 +12,7 @@ export interface Config {
 const configRead: Config = JSON.parse(configJson);
 
 export const config: Config = {
+  port: 8000,
   sourceFiles: configRead.sourceFiles.map(sourceFile =>
     path.resolve(paths.root, sourceFile)
   ),

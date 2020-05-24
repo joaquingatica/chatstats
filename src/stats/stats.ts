@@ -1,11 +1,13 @@
 import { outputToFile } from "../utils/files.ts";
-import { MessageType } from "../models/message.ts";
 import { Chat } from "../models/chat.ts";
+import { Message, MessageType } from "../models/message.ts";
+import { dateToSql } from "../utils/dateTimes.ts";
 
 export interface Stats {
   authors: AuthorValues[];
   messageTypes: string[];
-  messages: MessageValues[];
+  dates: string[];
+  messagesPerDate: MessagesPerDate;
 }
 
 interface AuthorValues {
@@ -13,39 +15,50 @@ interface AuthorValues {
   name: string;
 }
 
-interface MessageValues {
-  date: Date;
-  authorId: number;
-  type: string;
-  content: string;
+type MessagesPerDate = Record<string, DateMessages>;
+
+export interface DateMessages {
+  date: string;
+  messageCount: number;
 }
 
 export async function generateStats(outputPath: string): Promise<Stats> {
+  const authors: AuthorValues[] = getAuthors();
+  const messageTypes: string[] = getMessageTypes();
+  const messagesPerDate: MessagesPerDate = getMessagesPerDay();
+  const dates: string[] = Object.keys(messagesPerDate).sort();
   const stats: Stats = {
-    authors: serializeAuthors(),
-    messageTypes: serializeMessageTypes(),
-    messages: serializeMessages()
+    authors,
+    messageTypes,
+    dates,
+    messagesPerDate
   };
   await outputToFile(stats, outputPath);
   return stats;
 }
 
-function serializeAuthors(): AuthorValues[] {
+function getAuthors(): AuthorValues[] {
   return Object.values(Chat.instance.authors).map<AuthorValues>(author => ({
     id: author.id,
     name: author.name
   }));
 }
 
-function serializeMessageTypes(): string[] {
+function getMessageTypes(): string[] {
   return Object.values(MessageType).map<string>(type => type);
 }
 
-function serializeMessages(): MessageValues[] {
-  return Chat.instance.messages.map<MessageValues>(message => ({
-    date: message.dateTime,
-    authorId: message.author.id,
-    type: message.type,
-    content: message.content
-  }));
+function getMessagesPerDay(): MessagesPerDate {
+  const messagesPerDate: MessagesPerDate = {};
+  Chat.instance.messages.forEach((message: Message) => {
+    const dateSql: string = dateToSql(message.dateTime);
+    if (!(dateSql in messagesPerDate)) {
+      messagesPerDate[dateSql] = {
+        date: dateSql,
+        messageCount: 0
+      };
+    }
+    messagesPerDate[dateSql].messageCount += 1;
+  });
+  return messagesPerDate;
 }

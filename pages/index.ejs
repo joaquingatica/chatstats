@@ -1,11 +1,112 @@
 <html lang="en">
-    <head>
-        <title>ChatStats</title>
-        <meta charset="UTF-8">
-    </head>
-    <body>
-        <script type="text/javascript">
-            const stats = <%- JSON.stringify(stats) %>;
-        </script>
-    </body>
+<head>
+    <title>ChatStats</title>
+    <meta charset="UTF-8">
+    <style type="text/css">
+        #charts {
+            width: 1024px;
+            margin: auto;
+        }
+        div[id^="chart-"] {
+            margin: 30px 0px;
+        }
+    </style>
+</head>
+<body>
+    <div id="charts"></div>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      const stats = JSON.parse('<%- JSON.stringify(stats) %>');
+      const messageCounts = getMessageCountGrouped();
+
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawCharts);
+
+      function drawCharts() {
+        Object.keys(messageCounts).forEach(yearStr => {
+          const container = document.createElement('div');
+          container.id = `chart-${yearStr}`;
+          document.getElementById('charts').append(container);
+          drawChartForYear(yearStr);
+        })
+      }
+
+      function drawChartForYear(yearStr) {
+        const chartData = mapChartDataForYear(yearStr);
+        const data = new google.visualization.arrayToDataTable(chartData);
+        const options = {
+          title: `Messages Per Week (${yearStr})`,
+          // curveType: 'function',
+          legend: { position: 'right' }
+        };
+        const chart = new google.visualization.LineChart(document.getElementById(`chart-${yearStr}`));
+        chart.draw(data, options);
+      }
+
+      function mapChartDataForYear(yearStr) {
+        const yearData = messageCounts[yearStr];
+        const dataTable = [
+          ['Week Number', 'Message Count'],
+        ];
+        let started = false;
+        Object.keys(yearData).forEach(weekNumberStr => {
+          const messageCount = yearData[weekNumberStr];
+          started = started || messageCount > 0;
+          if (started) {
+            dataTable.push([
+              weekNumberStr,
+              messageCount,
+            ]);
+          }
+        });
+        return dataTable;
+      }
+
+      function getMessageCountGrouped() {
+        const firstYear = Number(stats.dates[0].split('-')[0]);
+        const lastYear = Number(stats.dates[stats.dates.length - 1].split('-')[0]);
+        const statsByYear = {};
+        for (let year = firstYear; year <= lastYear; year += 1) {
+          statsByYear[year] = {};
+          for (let month = 1; month <= 12; month += 1) {
+            const daysInMonth = getDaysInMonth(year, month);
+            for (let day = 1; day <= daysInMonth; day += 1) {
+              const weekOfYear = getWeekOfYear(new Date(year, month - 1, day));
+              const weekOfYearStr = `${weekOfYear}`;
+              if (!(weekOfYearStr in statsByYear[year])) {
+                statsByYear[year][weekOfYearStr] = 0;
+              }
+              const sqlDate = dateToSql(year, month, day);
+              const dateStat = stats.messagesPerDate[sqlDate];
+              const messageCount = dateStat ? dateStat.messageCount : 0;
+              statsByYear[year][weekOfYearStr] += messageCount;
+            }
+          }
+        }
+        return statsByYear;
+      }
+
+      function getWeekOfYear(date) {
+        const oneJan = new Date(date.getFullYear(), 0, 1);
+        return Math.ceil((((date - oneJan) / 86400000) + oneJan.getDay() + 1) / 7);
+      }
+
+      function getDaysInMonth(year, month) {
+        return new Date(year, month, 0).getDate();
+      }
+
+      function dateToSql(year, month, day) {
+        function addZeros(number) {
+          let result = "";
+          if (number < 10) {
+            result += "0";
+          }
+          result += `${number}`;
+          return result;
+        }
+        return `${Number(year)}-${addZeros(Number(month))}-${addZeros(Number(day))}`;
+      }
+    </script>
+</body>
 </html>

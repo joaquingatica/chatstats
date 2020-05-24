@@ -21,6 +21,7 @@
  *    }
  *    is normal line
  */
+import { parseTimestamp } from "../utils/dateTimes.ts";
 import { Chat } from "../models/chat.ts";
 import { Message, MessageType } from "../models/message.ts";
 import { Author } from "../models/author.ts";
@@ -132,16 +133,4 @@ function parseTextMessage(date: Date, author: Author, lineContents: any) {
       author: author
     })
   };
-}
-
-function parseTimestamp(dateStr: string, timeStr: string): Date {
-  const [monthStr, dayStr, yearStr] = dateStr.split("/");
-  const [hourStr, minuteStr] = timeStr.split(":");
-  return new Date(
-    2000 + Number(yearStr),
-    Number(monthStr) - 1,
-    Number(dayStr),
-    Number(hourStr),
-    Number(minuteStr)
-  );
 }
