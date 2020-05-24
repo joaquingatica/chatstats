@@ -28,6 +28,4 @@ export class Message implements MessageAttributes {
     this.type = type;
     this.content = content;
   }
-
-  static fromLine(line: string) {}
 }
