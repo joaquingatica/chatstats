@@ -2,6 +2,7 @@
   "imports": {
     "path/": "https://deno.land/std@0.53.0/path/",
     "http/": "https://deno.land/std@0.53.0/http/",
-    "testing/": "https://deno.land/std@0.53.0/testing/"
+    "testing/": "https://deno.land/std@0.53.0/testing/",
+    "dejs/": "https://deno.land/x/dejs@0.7.0/"
   }
  }

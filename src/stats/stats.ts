@@ -2,7 +2,7 @@ import { outputToFile } from "../utils/files.ts";
 import { MessageType } from "../models/message.ts";
 import { Chat } from "../models/chat.ts";
 
-interface Stats {
+export interface Stats {
   authors: AuthorValues[];
   messageTypes: string[];
   messages: MessageValues[];
@@ -20,13 +20,14 @@ interface MessageValues {
   content: string;
 }
 
-export async function generateStats(outputPath: string): Promise<void> {
+export async function generateStats(outputPath: string): Promise<Stats> {
   const stats: Stats = {
     authors: serializeAuthors(),
     messageTypes: serializeMessageTypes(),
     messages: serializeMessages()
   };
-  return outputToFile(stats, outputPath);
+  await outputToFile(stats, outputPath);
+  return stats;
 }
 
 function serializeAuthors(): AuthorValues[] {
