@@ -1,5 +1,6 @@
-import { serve } from "http/server.ts";
+import { config } from "./config.ts";
+import { parseChatFiles } from "./parsers/chatParser.ts";
+import { generateStats } from "./stats/stats.ts";
 
-for await (const req of serve({ port: 8000 })) {
-  req.respond({ body: 'ChatStats' });
-}
+await parseChatFiles(config.sourceFiles);
+await generateStats(config.outputPath);

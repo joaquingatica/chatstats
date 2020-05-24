@@ -1,0 +1,3 @@
+- configure date formats
+- configure file name and location
+- configure message formats

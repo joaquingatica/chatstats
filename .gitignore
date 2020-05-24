@@ -37,3 +37,5 @@ tsconfig.json
 
 # Chats
 data/
+output/
+config.json
