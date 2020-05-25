@@ -25,17 +25,17 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# node and deno for IDE
+# files used to improve Deno experience in the IDE
 package.json
 package-lock.json
 tsconfig.json
 /node_modules
 
-# IDEs
+# IDE project files
 .idea
 .vscode
 
-# Chats
+# PII
 data/
 output/
 config.json

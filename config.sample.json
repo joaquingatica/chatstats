@@ -3,5 +3,6 @@
     "./data/chat-export-part1.txt",
     "./data/chat-export-part2.txt"
   ],
+  "eventsSource": "./data/events.json",
   "outputPath": "./output/stats.json"
 }
