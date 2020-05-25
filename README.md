@@ -26,7 +26,7 @@ After cloning the repository:
       }
     }
     ```
-   NOTE: Date format id YYYY-MM-DD.
+   NOTE: Date format is YYYY-MM-DD.
 5. Update the configuration to match the desired data source folder and files, and the output file, for example:
     ```json
     {
@@ -62,6 +62,6 @@ Available commands:
 * `test` to run the tests.
 
 ## Notes & Disclaimers:
-* For now, the project in only developed for macOS for it's `sh` usage. Minimal changes for Windows or Linux may need to be made.
+* For now, the project in only developed for macOS for its `sh` usage. Minimal changes in scripts or usage for Windows and Linux need to be made.
 * Chat exports are expected to have the date and time format as `mm/dd/yyyy, HH:MM`.
 * Chat exports are expected to be exports without media, and it wasn't tested with other kind of exports
