@@ -10,6 +10,8 @@ It generates charts and statistics from a WhatsApp chat export, to visualize num
 
 The only requirement is Deno 1.0 or above. Install by following the [official documentation](https://deno.land/#installation).
 
+NOTE: For now, the project in only developed for macOS for it's `sh` usage. Minimal changes for Windows or Linux may need to be made.
+
 ## Setup
 
 After cloning the repository:
