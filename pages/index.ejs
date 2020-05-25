@@ -52,30 +52,28 @@
         const dataTable = new google.visualization.DataTable();
         dataTable.addColumn('number', 'Week Number');
         stats.authors.forEach(author => {
-          dataTable.addColumn('number', `By ${author.name}`);
+          dataTable.addColumn('number', author.name);
         });
         dataTable.addColumn('number', 'Total');
         dataTable.addColumn({type: 'string', role: 'tooltip', p: { html: true }});
         dataTable.addColumn({type: 'string', role: 'annotation'});
-        let started = true;
         const dataRows = [];
         Object.keys(yearData).forEach(weekNumberStr => {
           const weekData = yearData[weekNumberStr];
-          started = started || weekData.count > 0;
-          if (started) {
-            const row = [
-              Number(weekNumberStr),
-            ];
-            stats.authors.forEach(author => row.push(weekData.perAuthor[`${author.id}`]));
-            const tooltip = `
-              <div style="padding: 15px; font-family: Arial; font-size: 14px">
-                Messages: <strong>${weekData.count}</strong><br /><br />
-                From: ${sqlDateToReadable(weekData.dates[0])}<br />
-                To: ${sqlDateToReadable(weekData.dates[weekData.dates.length - 1])}
-              </div>`;
-            row.push(weekData.count, tooltip, weekData.comments.join('. ') || null);
-            dataRows.push(row);
-          }
+          const weekNumber = Number(weekNumberStr);
+          const row = [
+            weekNumber,
+          ];
+          stats.authors.forEach(author => row.push(weekData.perAuthor[`${author.id}`]));
+          const tooltip = `
+            <div style="padding: 15px; font-family: Arial; font-size: 14px">
+              Messages: <strong>${weekData.count}</strong><br /><br />
+              Week #: ${weekNumber}<br />
+              From: ${sqlDateToReadable(weekData.dates[0])}<br />
+              To: ${sqlDateToReadable(weekData.dates[weekData.dates.length - 1])}
+            </div>`;
+          row.push(weekData.count, tooltip, weekData.comments.join('. ') || null);
+          dataRows.push(row);
         });
         dataTable.addRows(dataRows);
         return dataTable;
