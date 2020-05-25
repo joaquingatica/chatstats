@@ -45,6 +45,9 @@ After cloning the repository:
 1. Run `sh run start`.
 2. Go to `http://localhost:8000` to see the stats in charts.
 
+The following is an example chart showing total messages per week, messages per author and events:
+![Example Chart](./docs/chart.png "Example Chart")
+
 ## Commands Reference
 
 Commands have the following structure:
