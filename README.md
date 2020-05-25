@@ -30,6 +30,7 @@ After cloning the repository:
 5. Update the configuration to match the desired data source folder and files, and the output file, for example:
     ```json
     {
+      "port": 8000,
       "sourceFiles": [
         "./data/chat-export-part1.txt",
         "./data/chat-export-part2.txt"

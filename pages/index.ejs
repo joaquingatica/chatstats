@@ -33,33 +33,51 @@
       }
 
       function drawChartForYear(yearStr) {
-        const chartData = mapChartDataForYear(yearStr);
-        const data = new google.visualization.arrayToDataTable(chartData);
+        const dataTable = mapChartDataForYear(yearStr);
         const options = {
           title: `Messages Per Week (${yearStr})`,
-          // curveType: 'function',
-          legend: { position: 'right' }
+          width: 1024,
+          height: 300,
+          tooltip: {
+            isHtml: true,
+          }
         };
         const chart = new google.visualization.LineChart(document.getElementById(`chart-${yearStr}`));
-        chart.draw(data, options);
+        chart.draw(dataTable, options);
       }
 
       function mapChartDataForYear(yearStr) {
         const yearData = messageCounts[yearStr];
-        const dataTable = [
-          ['Week Number', 'Message Count'],
-        ];
+
+        const dataTable = new google.visualization.DataTable();
+        dataTable.addColumn('number', 'Week Number');
+        stats.authors.forEach(author => {
+          dataTable.addColumn('number', `By ${author.name}`);
+        });
+        dataTable.addColumn('number', 'Total');
+        dataTable.addColumn({type: 'string', role: 'tooltip', p: { html: true }});
+        dataTable.addColumn({type: 'string', role: 'annotation'});
         let started = true;
+        const dataRows = [];
         Object.keys(yearData).forEach(weekNumberStr => {
-          const messageCount = yearData[weekNumberStr];
-          started = started || messageCount > 0;
+          const weekData = yearData[weekNumberStr];
+          started = started || weekData.count > 0;
           if (started) {
-            dataTable.push([
-              weekNumberStr,
-              messageCount,
-            ]);
+            const row = [
+              Number(weekNumberStr),
+            ];
+            stats.authors.forEach(author => row.push(weekData.perAuthor[`${author.id}`]));
+            const tooltip = `
+              <div style="padding: 15px; font-family: Arial; font-size: 14px">
+                Messages: <strong>${weekData.count}</strong><br /><br />
+                From: ${sqlDateToReadable(weekData.dates[0])}<br />
+                To: ${sqlDateToReadable(weekData.dates[weekData.dates.length - 1])}
+              </div>`;
+            row.push(weekData.count, tooltip, weekData.comments.join('. ') || null);
+            dataRows.push(row);
           }
         });
+        dataTable.addRows(dataRows);
         return dataTable;
       }
 
@@ -75,12 +93,29 @@
               const weekOfYear = getWeekOfYear(new Date(year, month - 1, day));
               const weekOfYearStr = `${weekOfYear}`;
               if (!(weekOfYearStr in statsByYear[year])) {
-                statsByYear[year][weekOfYearStr] = 0;
+                statsByYear[year][weekOfYearStr] = {
+                  count: 0,
+                  dates: [],
+                  perAuthor: {},
+                  comments: [],
+                };
+                stats.authors.forEach(author => {
+                  statsByYear[year][weekOfYearStr].perAuthor[`${author.id}`] = 0;
+                });
               }
+              const weekStats = statsByYear[year][weekOfYearStr];
               const sqlDate = dateToSql(year, month, day);
               const dateStat = stats.messagesPerDate[sqlDate];
-              const messageCount = dateStat ? dateStat.messageCount : 0;
-              statsByYear[year][weekOfYearStr] += messageCount;
+              weekStats.dates.push(sqlDate);
+              if (sqlDate in stats.events) {
+                statsByYear[year][weekOfYearStr].comments.push(stats.events[sqlDate]);
+              }
+              if (dateStat) {
+                weekStats.count += dateStat.messageCount;
+                stats.authors.forEach(author => {
+                  weekStats.perAuthor[`${author.id}`] += dateStat.messagesPerAuthor[`${author.id}`] || 0;
+                });
+              }
             }
           }
         }
@@ -106,6 +141,29 @@
           return result;
         }
         return `${Number(year)}-${addZeros(Number(month))}-${addZeros(Number(day))}`;
+      }
+
+      function sqlDateToReadable(sqlDate, includeYear) {
+        const [yearStr, monthStr, dayStr] = sqlDate.split("-");
+        const monthMap = {
+          "01": "January",
+          "02": "February",
+          "03": "March",
+          "04": "April",
+          "05": "May",
+          "06": "June",
+          "07": "July",
+          "08": "August",
+          "09": "September",
+          "10": "October",
+          "11": "November",
+          "12": "December",
+        };
+        const monthReadable = monthMap[monthStr];
+        if (monthReadable) {
+          return `${monthReadable} ${dayStr}${includeYear ? `, ${yearStr}` : ''}`;
+        }
+        return `${monthStr}/${dayStr}${includeYear ? `/${yearStr}` : ''}`;
       }
     </script>
 </body>

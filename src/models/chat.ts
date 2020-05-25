@@ -2,7 +2,7 @@ import { Author } from "./author.ts";
 import { Message } from "./message.ts";
 
 const systemAuthorName = "System";
-const systemAuthor = new Author({ name: systemAuthorName });
+export const systemAuthor = new Author({ name: systemAuthorName });
 
 export class Chat {
   authors: Record<string, Author> = {

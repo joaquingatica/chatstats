@@ -1,4 +1,5 @@
 {
+  "port": 8000,
   "sourceFiles": [
     "./data/chat-export-part1.txt",
     "./data/chat-export-part2.txt"
