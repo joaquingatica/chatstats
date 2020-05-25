@@ -10,8 +10,6 @@ It generates charts and statistics from a WhatsApp chat export, to visualize num
 
 The only requirement is Deno 1.0 or above. Install by following the [official documentation](https://deno.land/#installation).
 
-NOTE: For now, the project in only developed for macOS for it's `sh` usage. Minimal changes for Windows or Linux may need to be made.
-
 ## Setup
 
 After cloning the repository:
@@ -62,3 +60,8 @@ Available commands:
 * `start` to generate the stats and listen in port `8000` for web version.
 * `fmt` to format code using [Prettier](https://prettier.io/) with the default settings.
 * `test` to run the tests.
+
+## Notes & Disclaimers:
+* For now, the project in only developed for macOS for it's `sh` usage. Minimal changes for Windows or Linux may need to be made.
+* Chat exports are expected to have the date and time format as `mm/dd/yyyy, HH:MM`.
+* Chat exports are expected to be exports without media, and it wasn't tested with other kind of exports

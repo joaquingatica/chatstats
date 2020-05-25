@@ -1,3 +1,7 @@
-- configure date formats
-- configure file name and location
+### DONE
++ configure file name and location
+
+### PENDING
+- configurable date formats
 - configure message formats
+- configurable <Media ommited>
