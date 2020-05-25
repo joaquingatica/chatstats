@@ -26,6 +26,7 @@ After cloning the repository:
       }
     }
     ```
+   NOTE: Date format id YYYY-MM-DD.
 5. Update the configuration to match the desired data source folder and files, and the output file, for example:
     ```json
     {
