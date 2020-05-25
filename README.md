@@ -27,16 +27,16 @@ After cloning the repository:
     }
     ```
 5. Update the configuration to match the desired data source folder and files, and the output file, for example:
-```json
-{
-  "sourceFiles": [
-    "./data/chat-export-part1.txt",
-    "./data/chat-export-part2.txt"
-  ],
-  "eventsSource": "./data/events.json",
-  "outputPath": "./output/stats.json"
-}
-```
+    ```json
+    {
+      "sourceFiles": [
+        "./data/chat-export-part1.txt",
+        "./data/chat-export-part2.txt"
+      ],
+      "eventsSource": "./data/events.json",
+      "outputPath": "./output/stats.json"
+    }
+    ```
 
 ## Usage
 
