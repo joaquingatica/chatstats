@@ -25,10 +25,9 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-# files used to improve Deno experience in the IDE
+# files used to improve Deno experience in unsupported IDEs
 package.json
 package-lock.json
-tsconfig.json
 /node_modules
 
 # IDE project files
